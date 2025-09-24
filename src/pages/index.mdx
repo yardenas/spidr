@@ -1,9 +1,9 @@
 ---
 layout: ../layouts/Layout.astro
-title: "ActSafe: Active Exploration with Safety Constraints for Reinforcement Learning"
-description: How to explore dynamic environments safely?
-favicon: /favicon.svg
-thumbnail: /screenshot.png
+title: "SPiDR: A Simple Approach for Zero-Shot Safety in Sim-to-Real Transfer"
+description: Safe transfer of RL policies from sim to real.
+favicon: /spiderman.png
+# thumbnail: /screenshot.png
 ---
 
 import { Image } from "astro:assets";
@@ -23,13 +23,10 @@ import Splat from "../components/Splat.tsx"
 import CodeBlock from "../components/CodeBlock.astro";
 export const components = { pre: CodeBlock }
 
-import humanoid from "../assets/humanoid-optimized.gif";
-import push from "../assets/point-push.gif";
-import cartpole from "../assets/cartpole-safe.gif";
-import expansion from "../assets/expansion.svg";
-import pendulum from "../assets/pendulum-exploration.svg"
-import cartpoleLearning from "../assets/learn-curves-cartpole-exploration.svg"
-import safetyGym from "../assets/learning-curves-sparse.svg"
+import spidrIdea from "../assets/spidr-idea.svg";
+import demoEnvs from "../assets/demo-envs.png";
+import simulatedCosts from "../assets/simulated-costs.svg";
+import simulatedAll from "../assets/simulated.svg";
 
 <Header
   title={frontmatter.title}
@@ -38,28 +35,39 @@ import safetyGym from "../assets/learning-curves-sparse.svg"
       name: "Yarden As",
       url: "https://yas.pub",
       institution: "ETH Zurich",
-      notes: ["*"],
     },
     {
-      name: "Bhavya Sukhija",
-      url: "https://sukhijab.github.io/",
-      institution: "ETH Zurich",
-      notes: ["*"],
+      name: "Chengrui Qu",
+      url: "https://crqu.github.io/",
+      institution: "Caltech",
     },
     {
-      name: "Lenart Treven",
-      url: "https://lenarttreven.github.io/",
+      name: "Benjamin Unger",
       institution: "ETH Zurich",
     },
     {
-      name: "Carmelo Sferrazza",
-      url: "https://sferrazza.cc/",
-      institution: "UC Berkeley",
+      name: "Dongho Kang",
+      url: "https://donghokang.net/",
+      institution: "ETH Zurich",
+    },
+    {
+      name: "Max van der Hart",
+      institution: "ETH Zurich",
+    },
+    {
+      name: "Laixi Shi",
+      url: "https://laixishi.github.io/",
+      institution: "John Hopkins University",
     },
     {
       name: "Stelian Coros",
-      url: "https://crl.ethz.ch/people/coros/index.html",
       institution: "ETH Zurich",
+      url: "https://crl.ethz.ch/people/coros/"
+    },
+    {
+      name: "Adam Wierman",
+      institution: "Caltech",
+      url: "https://adamwierman.com/"
     },
     {
       name: "Andreas Krause",
@@ -67,83 +75,68 @@ import safetyGym from "../assets/learning-curves-sparse.svg"
       institution: "ETH Zurich",
     },
   ]}
-  conference="ICLR 2025"
+  conference="NeurIPS 2025"
   notes={[
-    {
-      symbol: "*",
-      text: "Equal Contribution",
-    },
   ]}
   links={[
     {
       name: "Code",
-      url: "https://github.com/yardenas/actsafe",
+      url: "https://github.com/yardenas/safe-learning",
       icon: "mdi:github",
     },
     {
       name: "arXiv",
-      url: "https://arxiv.org/abs/2410.09486",
+      url: "https://arxiv.org/abs/2509.18648",
       icon: "academicons:arxiv",
     },{
       name: "Paper",
-      url: "https://openreview.net/forum?id=aKRADWBJ1I&referrer=%5BAuthor%20Console%5D(%2Fgroup%3Fid%3DICLR.cc%2F2025%2FConference%2FAuthors%23your-submissions)",
+      url: "https://openreview.net/forum?id=Pe1ypX9gBO",
       icon: "ri:file-pdf-2-line",
     },
   ]}
   />
+  
+
 <div class="container mx-auto py-10">
   <div class="flex flex-col lg:flex-row justify-center lg:space-x-4 space-y-4 lg:space-y-0">
-    <div class="w-full lg:w-1/3 flex justify-center">
-      <div class="w-25 overflow-hidden">
-        <Image src={humanoid} alt="Demo on Humanoid Robot" class="object-cover w-full h-full" />
-      </div>
-    </div>
-    <div class="w-full lg:w-1/3 flex justify-center">
-      <div class="w-25 overflow-hidden">
-        <Image src={push} alt="Demo on SafetyGym" class="object-cover w-full h-full" />
-      </div>
-    </div>
-    <div class="w-full lg:w-1/3 flex justify-center">
-      <div class="w-25 overflow-hidden">
-        <Image src={cartpole} alt="Demo on Cartpole" class="object-cover w-full h-full" />
-      </div>
-    </div>
+    <Image src={spidrIdea} alt="Core idea of SPiDR" class="object-cover w-full h-full" />
   </div>
 </div>
 
-## Abstract
 
-Reinforcement learning (RL) is ubiquitous in the development of modern AI systems. 
-However, state-of-the-art RL agents require extensive, and potentially unsafe, interactions with their environments to learn effectively.
-These limitations confine RL agents to simulated environments, hindering their ability to learn directly in real-world settings.
-In this work, we present ActSafe, a novel model-based RL algorithm for safe and efficient exploration.
-ActSafe maintains a pessimistic set of safe policies and optimistically selects policies within this set that yield trajectories with the largest model epistemic uncertainty. 
+We introduce SPiDR (**S**im-to-real via **P**ess**i**mistic **D**omain **R**andomization), a scalable algorithm that closes the gap between simulation and reality without compromising safety. SPiDR uses domain randomization to incorporate the uncertainty about the sim-to-real gap into the safety constraints, making it versatile and highly compatible with existing training pipelines.
 
-## Key Idea
-ActSafe learns a probabilistic model of the dynamics, including its epistemic uncertainty, and leverages it to collect trajectories that maximize the information gain about the dynamics.
-To ensure safety, ActSafe plans pessimistically w.r.t. its set of plausible models and thus implicitly maintains a (pessimistic) set of policies that are deemed to be safe with high probability.
+We theoretically show that unsafe transfer can be related to large uncertainty about the sim-to-real gap, quantified as the disagreement among next-state predictions from domain-randomized dynamics models. This key idea is illustrated in the figure above, where spikes in uncertainty (e.g. at t = 4.6 and t = 5.3) coincide with unstable or unsafe behaviors, such as stumbling or flipping. Motivated by this insight, we propose to penalize the cost with the uncertainty to achieve safe sim-to-real transfer, leading to the design of SPiDR.
 
-<Figure caption="Schematic illustration of the expansion process. We expand the safe set at each iteration
-by reducing our uncertainty around policies at the boundary of the previous pessimistic safe set. The pale blue area depicts
-the reachable set after H expansions.">
-<Image src={expansion} alt="Expansion Process" class="object-cover w-full h-full" />
+
+## Domain Randomization is Not Safe
+Domain randomization is the de facto method for reliable transfer for simulator to real robots. 
+Safety is a key component in robotics, however it is not addressed directly by domain randomization. This means that you can train your robot in simulation, and it may still violate safety constraints (like falling or overusing the motors) when you get to deploy the policy on the real system. Existing methods for safe transfer typically rely on tools from robust optimization, therefore requiring roboticists to significantly alter our beloved domain randomization training pipelines. We started this project with the following question:
+
+> How can we develop a safe sim-to-real reinforcement learning algorithm that practitioners can use without reinventing the wheel?
+
+With that in mind, the first obvious thing to do is check is just using domain randomization can still satisfy safety constraints, even when under distribution shifts. The figure below shows that using domain randomization fails to satisfy safety constraints on a bunch of well-known tasks in Mujoco. In contrast, when using SPiDR, constraints are satisfied across all tasks.
+<Figure caption="Domain randomization does not satsify the safety constraints.">
+  <Image src={simulatedCosts} alt="Domain randomization does not satisfy safety constraints under mismatches in the dynamics." class="object-cover w-full h-full"/>
 </Figure>
 
-Concretely we want to solve
-<LaTeX formula="   \pi_n,  f_n = \argmax_{\pi \in \mathcal{S}_n, f \in \mathcal{M}_n} \underbrace{\mathbb{E}_{\tau^{\pi, f}}\left[\sum_{t=0}^{T-1} \|{\sigma_{n-1}(s_t, \hat{s}_t)\|}\right]}_{:= J_{r_n}(\pi, f)},"/>
-Where <LaTeX formula="\sigma_{n - 1}" inline="true"/> represents our epistemic uncertainty over a model of the dynamics.
-Intuitevly, selecting a policy <LaTeX formula="\pi_n" inline="true"/> that "navigates" to states with high uncertainty allows us to collect information more efficiently, all while staying within the pessimistic safe set of policies <LaTeX formula="\mathcal{S_n}" inline="true"/>.
+## What About Performance?
+We saw that by adding pessimis, SPiDR is able to transfer safely. But what if with this added conservatism SPiDR is just safe, but does not really solve the task? In the figure below we show the performance in the y-axis vs. safety in the x-axis (upper-left is better). As shown, among all baselines, SPiDR consistently satisfies the constraints while achieving good performance.
+<Figure caption="SPiDR finds good balance between safety and performance">
+  <Image src={simulatedAll} alt="SPiDR finds good balance between safety and performance." class="object-cover w-full h-full"/>
+</Figure>
 
-## Experiments
-### Pendulum
+
+
+
 We evaluate ActSafe on the Pendulum environment.
 We visualize the trajectories of ActSafe and its unsafe variant in the state space during exploration. 
 We observe that both algorithms cover the state space well, however, ActSafe remains within the safety boundary during learning whereas its unsafe version violates the constraints.
-<Figure caption="Safe exploration in the PendulumSwingup task.
+{/* <Figure caption="Safe exploration in the PendulumSwingup task.
 Each plot above visualizes trajectories considered during exploration across all past learning episodes.
 The red box in the plot depicts the safety boundary in the state space. ActSafe maintains safety throughout learning.">
 <Image src={pendulum} alt="Pendulum safe exploration" class="object-cover w-full h-full" />
-</Figure>
+</Figure> */}
 
 
 ### Cartpole
@@ -155,9 +148,9 @@ We compare ActSafe with three baselines:
 * Optimistic, which uses the model epistemic uncertainty estimates as exploration reward bonuses.
 * Greedy, which optimizes the extrinsic reward directly.
 
-<Figure caption="Hard exploration on Cartpole.">
+{/* <Figure caption="Hard exploration on Cartpole.">
 <Image width="500" src={cartpoleLearning} alt="Cartpole Exploration"/>
-</Figure>
+</Figure> */}
 
 #### Sparse-reward Navigation
 In this experiment, we examine the influence of using an intrinsic reward in hard exploration tasks.
@@ -165,20 +158,19 @@ To this end, we extend tasks from SafetyGym and introduce three new tasks with s
 We provide more details about the rewards in the figure below. In the figure below we compare ActSafe with a Greedy baseline that collects trajectories only based on the sparse extrinsic reward.
 As shown, ActSafe substantially outperforms Greedy in all tasks, while violating the constraint only once in the GotoGoal task.
 
-<Figure caption="Hard exploration in navigation tasks.">
+{/* <Figure caption="Hard exploration in navigation tasks.">
 <Image src={safetyGym} alt="Expansion Process" class="w-full"/>
-</Figure>
+</Figure> */}
 
 ## Cite
 
 ```
-@misc{as2024actsafeactiveexplorationsafety,
-      title={ActSafe: Active Exploration with Safety Constraints for Reinforcement Learning}, 
-      author={Yarden As and Bhavya Sukhija and Lenart Treven and Carmelo Sferrazza and Stelian Coros and Andreas Krause},
-      year={2024},
-      eprint={2410.09486},
-      archivePrefix={arXiv},
-      primaryClass={cs.LG},
+@inproceedings{
+  as2025spidrsimpleapproachzeroshot,
+  title={{SP}i{DR}: A Simple Approach for Zero-Shot Safety in Sim-to-Real Transfer},
+  author={Yarden As and Chengrui Qu and Benjamin Unger and Dongho Kang and Max van der Hart and Laixi Shi and Stelian Coros and Adam Wierman and Andreas Krause},
+  booktitle={International Conference on Neural Information Processing Systems},
+  year={2025},
 }
 ```
 
