@@ -41,7 +41,9 @@ const { title, description, favicon, thumbnail } = Astro.props.frontmatter;
 
     <title>{title}</title>
   </head>
-  <body class="p-6 pt-12 flex flex-col gap-4 items-center max-w-[50rem] m-auto">
+  <body
+    class="p-6 pt-12 flex flex-col gap-4 items-center max-w-[65rem] m-auto prose prose-paper"
+  >
     <slot />
     <footer class="m-auto">
       <p class="text-zinc-500 text-sm">
@@ -65,19 +67,26 @@ const { title, description, favicon, thumbnail } = Astro.props.frontmatter;
 <style is:global>
   body {
     font-family: "Noto Sans", sans-serif;
-    @apply text-zinc-900 bg-zinc-50;
+    @apply text-zinc-900 bg-white;
   }
-  a {
-    @apply text-blue-500 hover:underline;
+  .prose p {
+    @apply w-full text-lg;
+    margin-top: 0; /* Adjust as needed */
+    margin-bottom: 0; /* Adjust as needed */
   }
-  p {
-    @apply text-lg w-full;
-  }
-  h1 {
+  .prose h1 {
     @apply text-5xl text-center font-medium;
   }
-  h2 {
+  .prose h2 {
     @apply w-full text-3xl font-bold mt-4;
+    margin-bottom: 0;
+  }
+  .prose li {
+    @apply text-lg;
+  }
+  .prose ul {
+    margin-top: 0;
+    margin-bottom: 0;
   }
 </style>
 
