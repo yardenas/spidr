@@ -27,6 +27,10 @@ import spidrIdea from "../assets/spidr-idea.svg";
 import demoEnvs from "../assets/demo-envs.png";
 import simulatedCosts from "../assets/simulated-costs.svg";
 import simulatedAll from "../assets/simulated.svg";
+import realWorldQuant from "../assets/real-world-safety.svg";
+import spidrGo1 from "../assets/spidr.mp4";
+import ramuGo1 from "../assets/baseline.mp4";
+import spidrRC from "../assets/spidr-rccar.mp4";
 
 <Header
   title={frontmatter.title}
@@ -126,43 +130,41 @@ We saw that by adding pessimis, SPiDR is able to transfer safely. But what if wi
   <Image src={simulatedAll} alt="SPiDR finds good balance between safety and performance." class="object-cover w-full h-full"/>
 </Figure>
 
+## Enough with Mujoco, Show me Some Real Robots!
+In our last experiments, we took SPiDR to the real world, deploying it on a Unitree Go1 robot and a remote-controlled race car, shown below.
+<Image src={demoEnvs} alt="Real robots" class="object-cover w-full h-full"/>
+In the race car, the robot has to navigate to a goal position while avoiding the tire obstacles. For the Unitree Go1, we put a safety constraint on the robot's joint limits.
 
+Below, we show two trajectories of the Unitree Go1 robot. Both trajectories are conditioned exactly on the same commands, however the one on the left uses SPiDR, while the one on the right uses
+a baseline algorithm from the robust RL literature. 
+<TwoColumns>
+  <div slot="left" class="flex flex-col items-center">
+    <h3 class="text-lg font-semibold -mb-10 text-center">SPiDR</h3>
+    <Figure caption="SPiDR follows commands while satisfying the safety constraints.">
+      <Video source={spidrGo1} />
+    </Figure>
+  </div>
+  <div slot="right" class="flex flex-col items-center">
+    <h3 class="text-lg font-semibold -mb-10 text-center">Baseline</h3>
+    <Figure caption="Robust safe RL baseline fails to transfer to the real robot.">
+      <Video source={ramuGo1} />
+    </Figure>
+  </div>
+</TwoColumns>
+Below, we showcase SPiDR using the race car robot.
 
+<Figure caption="SPiDR maintains safety upon deployment.">
+    <Video source={spidrRC} />
+</Figure>
 
-We evaluate ActSafe on the Pendulum environment.
-We visualize the trajectories of ActSafe and its unsafe variant in the state space during exploration. 
-We observe that both algorithms cover the state space well, however, ActSafe remains within the safety boundary during learning whereas its unsafe version violates the constraints.
-{/* <Figure caption="Safe exploration in the PendulumSwingup task.
-Each plot above visualizes trajectories considered during exploration across all past learning episodes.
-The red box in the plot depicts the safety boundary in the state space. ActSafe maintains safety throughout learning.">
-<Image src={pendulum} alt="Pendulum safe exploration" class="object-cover w-full h-full" />
-</Figure> */}
+As shown, in both robotics, SPiDR transfers successfully while maintaining the safety constraint.
 
+Finally, we present the accumulated costs that measure safety on the real robots across five random seeds and for multiple trajectories per seed.
+<Figure caption="SPiDR finds good balance between safety and performance">
+  <Image src={realWorldQuant} alt="Safety is maintained when deploying on two real robotic systems." class="object-cover w-full h-full"/>
+</Figure>
+This comprehensive empirical evaluation demonstrates again that SPiDR achieves good performance while transferring safely to the real robots.
 
-### Cartpole
-
-We evaluate on CartpoleSwingupSparse from the RWRL benchmark, where the goal is to swing up the pendulum, while keeping the cart at the center.
-We add penalty for large actions to make exploration even more challenging.
-We compare ActSafe with three baselines:
-* Uniform, which samples actions uniformly at random during exploration.
-* Optimistic, which uses the model epistemic uncertainty estimates as exploration reward bonuses.
-* Greedy, which optimizes the extrinsic reward directly.
-
-{/* <Figure caption="Hard exploration on Cartpole.">
-<Image width="500" src={cartpoleLearning} alt="Cartpole Exploration"/>
-</Figure> */}
-
-#### Sparse-reward Navigation
-In this experiment, we examine the influence of using an intrinsic reward in hard exploration tasks.
-To this end, we extend tasks from SafetyGym and introduce three new tasks with sparse rewards, i.e., without any reward shaping to guide the agent to the goal.
-We provide more details about the rewards in the figure below. In the figure below we compare ActSafe with a Greedy baseline that collects trajectories only based on the sparse extrinsic reward.
-As shown, ActSafe substantially outperforms Greedy in all tasks, while violating the constraint only once in the GotoGoal task.
-
-{/* <Figure caption="Hard exploration in navigation tasks.">
-<Image src={safetyGym} alt="Expansion Process" class="w-full"/>
-</Figure> */}
-
-## Cite
 
 ```
 @inproceedings{
